@@ -8,13 +8,6 @@
 #include "spdlog/sinks/daily_file_sink.h"
 
 
-#ifdef LOG_EXPORTS
-#define LOG_API __declspec(dllexport)
-#else
-#define LOG_API __declspec(dllimport)
-#endif
-
-
 class Log
 {
 public:
@@ -56,5 +49,4 @@ private:
 
 private:
 	std::shared_ptr<spdlog::logger> logger;
-
 };

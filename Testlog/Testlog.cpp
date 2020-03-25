@@ -5,27 +5,14 @@
 #include <cstdarg>
 
 #pragma comment(lib, "log.lib")
-__declspec(dllimport) void LogTrace(const char* m, ...);
 
-template<typename T>
-struct item_return
-{
-	using type = T&&;
-};
+#ifdef LOG_EXPORTS
+#define LOG_API __declspec(dllexport)
+#else
+#define LOG_API __declspec(dllimport)
+#endif
+LOG_API void LogTrace(const char* m, ...);
 
-template<typename T>
-inline typename item_return<T>::type convert(T&& arg)
-{
-	return static_cast<T&&>(arg);
-}
-
-template<typename... Args>
-std::string fmt(const char* format, Args... args)
-{
-	char buf[128] = { 0 };
-	snprintf(buf, sizeof(buf), format, convert(std::forward<Args>(args))...);
-	return buf;
-}
 
 int main()
 {

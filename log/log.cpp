@@ -1,9 +1,14 @@
 #include "log.h"
 
+#ifdef LOG_EXPORTS
+#define LOG_API __declspec(dllexport)
+#else
+#define LOG_API __declspec(dllimport)
+#endif
 
 LOG_API void LogTrace(const char* m, ...)
 {
-	if (Log::GetInstance().GetLogger()->level() >= spdlog::level::trace)
+	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::trace)
 	{
 		char strLogBuf[1024] = { 0 };
 		va_list arg_list;
