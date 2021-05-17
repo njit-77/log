@@ -1,2 +1,3 @@
 /.vs/
-/Output/
+/x64/
+version.h

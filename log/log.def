@@ -3,3 +3,15 @@ LIBRARY
 EXPORTS
 	; 此处可以是显式导出
 	LogTrace
+	LogDebug
+	LogInfo
+	LogWarn
+	LogError
+	LogCritical
+	SetLogTrace
+	SetLogDebug
+	SetLogInfo
+	SetLogWarn
+	SetLogError
+	SetLogCritical
+	SetLogOff

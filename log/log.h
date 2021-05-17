@@ -29,11 +29,11 @@ private:
 			_mkdir(LOG_PATH);
 		}
 
-		logger = spdlog::daily_logger_mt("daily_logger", "log/daily.log", 0, 0);
+		logger = spdlog::daily_logger_mt("daily_logger", "log/log.log", 0, 0);
 
 		logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e]	ThreadId:%5t Loglevel:%8l |	%v");
 
-		logger->flush_on(spdlog::level::err);
+		logger->flush_on(spdlog::level::trace);
 
 		spdlog::set_level(spdlog::level::trace);
 	}
