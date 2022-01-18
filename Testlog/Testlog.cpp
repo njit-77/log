@@ -25,6 +25,7 @@ LOG_API void SetLogWarn();
 LOG_API void SetLogError();
 LOG_API void SetLogCritical();
 LOG_API void SetLogOff();
+LOG_API void LogOutputSystemMessage();
 
 int main()
 {
@@ -32,6 +33,7 @@ int main()
 	GetLocalTime(&sys);
 
 	SetLogTrace();
+	LogOutputSystemMessage();
 	LogTrace("[SetLogTrace]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
 	LogDebug("[SetLogTrace]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
 	LogInfo("[SetLogTrace]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);

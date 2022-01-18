@@ -7,6 +7,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/daily_file_sink.h"
 
+/// 1、2022-01-18 更新spdlog版本，由1.5.0->1.9.2
 
 class Log
 {

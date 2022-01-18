@@ -117,7 +117,7 @@
       <PreprocessorDefinitions>_DEBUG;LOG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)spdlog-1.5.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)spdlog\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,7 +162,7 @@
       <PreprocessorDefinitions>NDEBUG;LOG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)spdlog-1.5.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)spdlog\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -15,3 +15,5 @@ EXPORTS
 	SetLogError
 	SetLogCritical
 	SetLogOff
+	;
+	LogOutputSystemMessage
