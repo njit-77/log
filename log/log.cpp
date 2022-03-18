@@ -99,39 +99,11 @@ LOG_API void LogCritical(const char* m, ...)
 	}
 }
 
-LOG_API void SetLogTrace()
+LOG_API void SetLogLevel(int level)
 {
-	spdlog::set_level(spdlog::level::trace);
-}
-
-LOG_API void SetLogDebug()
-{
-	spdlog::set_level(spdlog::level::debug);
-}
-
-LOG_API void SetLogInfo()
-{
-	spdlog::set_level(spdlog::level::info);
-}
-
-LOG_API void SetLogWarn()
-{
-	spdlog::set_level(spdlog::level::warn);
-}
-
-LOG_API void SetLogError()
-{
-	spdlog::set_level(spdlog::level::err);
-}
-
-LOG_API void SetLogCritical()
-{
-	spdlog::set_level(spdlog::level::critical);
-}
-
-LOG_API void SetLogOff()
-{
-	spdlog::set_level(spdlog::level::off);
+	if (level < spdlog::level::trace) level = spdlog::level::trace;
+	if (level > spdlog::level::off) level < spdlog::level::off;
+	spdlog::set_level((spdlog::level::level_enum)level);
 }
 
 std::string execCmd(const char *cmd)
@@ -148,6 +120,11 @@ std::string execCmd(const char *cmd)
 	_pclose(pipe);
 
 	return result;
+}
+
+LOG_API void SetLogFileName(const char* file_name)
+{
+	Log::GetInstance().InitLog(file_name);
 }
 
 LOG_API void LogOutputSystemMessage()

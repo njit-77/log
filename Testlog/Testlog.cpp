@@ -18,13 +18,19 @@ LOG_API void LogInfo(const char* m, ...);
 LOG_API void LogWarn(const char* m, ...);
 LOG_API void LogError(const char* m, ...);
 LOG_API void LogCritical(const char* m, ...);
-LOG_API void SetLogTrace();
-LOG_API void SetLogDebug();
-LOG_API void SetLogInfo();
-LOG_API void SetLogWarn();
-LOG_API void SetLogError();
-LOG_API void SetLogCritical();
-LOG_API void SetLogOff();
+
+enum level_enum
+{
+	trace = 0,
+	debug = 1,
+	info = 2,
+	warn = 3,
+	err = 4,
+	critical = 5,
+	off = 6,
+};
+LOG_API void SetLogLevel(int level);
+LOG_API void SetLogFileName(const char* file_name);
 LOG_API void LogOutputSystemMessage();
 
 int main()
@@ -32,62 +38,18 @@ int main()
 	SYSTEMTIME sys;
 	GetLocalTime(&sys);
 
-	SetLogTrace();
+	SetLogFileName("Testlog");
 	LogOutputSystemMessage();
-	LogTrace("[SetLogTrace]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogTrace]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogTrace]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogTrace]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogTrace]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogTrace]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
 
-	SetLogDebug();
-	LogTrace("[SetLogDebug]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogDebug]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogDebug]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogDebug]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogDebug]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogDebug]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
-
-	SetLogInfo();
-	LogTrace("[SetLogInfo]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogInfo]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogInfo]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogInfo]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogInfo]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogInfo]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
-
-	SetLogWarn();
-	LogTrace("[SetLogWarn]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogWarn]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogWarn]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogWarn]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogWarn]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogWarn]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
-
-	SetLogError();
-	LogTrace("[SetLogError]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogError]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogError]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogError]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogError]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogError]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
-
-	SetLogCritical();
-	LogTrace("[SetLogCritical]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogCritical]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogCritical]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogCritical]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogCritical]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogCritical]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
-
-	SetLogOff();
-	LogTrace("[SetLogOff]This is a Trace Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogDebug("[SetLogOff]This is a Debug Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogInfo("[SetLogOff]This is a Info Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogWarn("[SetLogOff]This is a Warn Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogError("[SetLogOff]This is a Error Log.Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-	LogCritical("[SetLogOff]This is a Critical Log.Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
-
+	for (int i = 0; i < level_enum::off; i++)
+	{
+		SetLogLevel(i);
+		LogTrace("[SetLogTrace]This is a Trace Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogDebug("[SetLogTrace]This is a Debug Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogInfo("[SetLogTrace]This is a Info Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogWarn("[SetLogTrace]This is a Warn Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogError("[SetLogTrace]This is a Error Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogCritical("[SetLogTrace]This is a Critical Log, Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
+	}
 	system("pause");
 }

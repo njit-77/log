@@ -19,7 +19,26 @@ public:
 		return m_instance;
 	}
 
-	inline auto GetLogger() { return logger; }
+	bool InitLog(const char* file_name = "log")
+	{
+		std::string full_file_name;
+		full_file_name.append(LOG_PATH).append(file_name).append(".log");
+
+		logger = spdlog::daily_logger_mt("daily_logger", full_file_name, 0, 0);
+
+		logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e]	ThreadId:%5t Loglevel:%8l |	%v");
+
+		logger->flush_on(spdlog::level::trace);
+	}
+
+	inline auto GetLogger()
+	{
+		if (logger == nullptr)
+		{
+			InitLog();
+		}
+		return logger;
+	}
 
 private:
 
@@ -29,12 +48,6 @@ private:
 		{
 			_mkdir(LOG_PATH);
 		}
-
-		logger = spdlog::daily_logger_mt("daily_logger", "log/log.log", 0, 0);
-
-		logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e]	ThreadId:%5t Loglevel:%8l |	%v");
-
-		logger->flush_on(spdlog::level::trace);
 
 		spdlog::set_level(spdlog::level::trace);
 	}

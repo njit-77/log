@@ -8,12 +8,7 @@ EXPORTS
 	LogWarn
 	LogError
 	LogCritical
-	SetLogTrace
-	SetLogDebug
-	SetLogInfo
-	SetLogWarn
-	SetLogError
-	SetLogCritical
-	SetLogOff
+	SetLogLevel
 	;
+	SetLogFileName
 	LogOutputSystemMessage
