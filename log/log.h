@@ -19,7 +19,7 @@ public:
 		return m_instance;
 	}
 
-	bool InitLog(const char* file_name = "log")
+	void InitLog(const char* file_name = "log")
 	{
 		std::string full_file_name;
 		full_file_name.append(LOG_PATH).append(file_name).append(".log");

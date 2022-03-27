@@ -18,7 +18,6 @@ LOG_API void LogInfo(const char* m, ...);
 LOG_API void LogWarn(const char* m, ...);
 LOG_API void LogError(const char* m, ...);
 LOG_API void LogCritical(const char* m, ...);
-
 enum level_enum
 {
 	trace = 0,

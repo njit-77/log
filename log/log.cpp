@@ -102,7 +102,7 @@ LOG_API void LogCritical(const char* m, ...)
 LOG_API void SetLogLevel(int level)
 {
 	if (level < spdlog::level::trace) level = spdlog::level::trace;
-	if (level > spdlog::level::off) level < spdlog::level::off;
+	if (level > spdlog::level::off) level = spdlog::level::off;
 	spdlog::set_level((spdlog::level::level_enum)level);
 }
 
