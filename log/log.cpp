@@ -7,6 +7,8 @@
 #pragma comment(lib, "iphlpapi.lib")
 #pragma warning(disable: 4996)
 
+#pragma comment(lib, "version")
+
 #ifdef LOG_EXPORTS
 #define LOG_API __declspec(dllexport)
 #else
@@ -125,6 +127,87 @@ std::string execCmd(const char *cmd)
 LOG_API void SetLogFileName(const char* file_name)
 {
 	Log::GetInstance().InitLog(file_name);
+}
+
+bool QueryValue(const std::string& ValueName, const std::string& szModuleName, std::string& RetStr)
+{
+	bool bSuccess = FALSE;
+	BYTE*  m_lpVersionData = NULL;
+	DWORD   m_dwLangCharset = 0;
+	CHAR *tmpstr = NULL;
+
+	do
+	{
+		if (!ValueName.size() || !szModuleName.size())
+			break;
+
+		DWORD dwHandle;
+		// 判断系统能否检索到指定文件的版本信息
+		DWORD dwDataSize = ::GetFileVersionInfoSizeA((LPCSTR)szModuleName.c_str(), &dwHandle);
+		if (dwDataSize == 0)
+			break;
+
+		m_lpVersionData = new (std::nothrow) BYTE[dwDataSize];// 分配缓冲区
+		if (NULL == m_lpVersionData)
+			break;
+
+		// 检索信息
+		if (!::GetFileVersionInfoA((LPCSTR)szModuleName.c_str(), dwHandle, dwDataSize,
+			(void*)m_lpVersionData))
+			break;
+
+		UINT nQuerySize;
+		DWORD* pTransTable;
+		// 设置语言
+		if (!::VerQueryValueA(m_lpVersionData, "\\VarFileInfo\\Translation", (void **)&pTransTable, &nQuerySize))
+			break;
+
+		m_dwLangCharset = MAKELONG(HIWORD(pTransTable[0]), LOWORD(pTransTable[0]));
+		if (m_lpVersionData == NULL)
+			break;
+
+		tmpstr = new (std::nothrow) CHAR[128];// 分配缓冲区
+		if (NULL == tmpstr)
+			break;
+		sprintf_s(tmpstr, 128, "\\StringFileInfo\\%08lx\\%s", m_dwLangCharset, ValueName.c_str());
+		LPVOID lpData;
+
+		// 调用此函数查询前需要先依次调用函数GetFileVersionInfoSize和GetFileVersionInfo
+		if (::VerQueryValueA((void *)m_lpVersionData, tmpstr, &lpData, &nQuerySize))
+			RetStr = (char*)lpData;
+
+		bSuccess = TRUE;
+	} while (FALSE);
+
+	// 销毁缓冲区
+	if (m_lpVersionData)
+	{
+		delete[] m_lpVersionData;
+		m_lpVersionData = NULL;
+	}
+	if (tmpstr)
+	{
+		delete[] tmpstr;
+		tmpstr = NULL;
+	}
+
+	return bSuccess;
+}
+
+HMODULE GetSelfModuleHandle()
+{
+	MEMORY_BASIC_INFORMATION mbi;
+	return ((::VirtualQuery(GetSelfModuleHandle, &mbi, sizeof(mbi)) != 0) ? (HMODULE)mbi.AllocationBase : NULL);
+}
+
+std::string TCHAR2STRING(TCHAR* str)
+{
+	std::string strstr;
+	int iLen = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+	char* chRtn = new char[iLen * sizeof(char)];
+	WideCharToMultiByte(CP_ACP, 0, str, -1, chRtn, iLen, NULL, NULL);
+	strstr = chRtn;
+	return strstr;
 }
 
 LOG_API void LogOutputSystemMessage()
@@ -283,5 +366,47 @@ LOG_API void LogOutputSystemMessage()
 
 		if (pIpAdapterInfo)
 			delete pIpAdapterInfo;
+	}
+
+	/// FileAttribute Information
+	{
+		LogTrace("*********************FileAttribute Information*********************");
+
+		TCHAR szBuff[0xff] = { 0 };
+		GetModuleFileName(GetSelfModuleHandle(), szBuff, MAX_PATH);
+		std::string module_name = TCHAR2STRING(szBuff);
+
+		std::string value;
+		/// 获取文件说明
+		QueryValue("FileDescription", module_name, value);
+		LogTrace("FileDescription:%s.", value.c_str());
+
+		/// 获取文件版本
+		QueryValue("FileVersion", module_name, value);
+		LogTrace("FileVersion:%s.", value.c_str());
+
+		///// 获取内部名称
+		//QueryValue("InternalName", module_name, value);
+		//LogTrace("InternalName:%s.", value.c_str());
+
+		///// 获取公司名称
+		//QueryValue("CompanyName", module_name, value);
+		//LogTrace("CompanyName:%s.", value.c_str());
+
+		///// 获取版权
+		//QueryValue("LegalCopyright", module_name, value);
+		//LogTrace("LegalCopyright:%s.", value.c_str());
+
+		///// 获取原始文件名
+		//QueryValue("OriginalFilename", module_name, value);
+		//LogTrace("OriginalFilename:%s.", value.c_str());
+
+		///// 获取产品名称
+		//QueryValue("ProductName", module_name, value);
+		//LogTrace("ProductName:%s.", value.c_str());
+
+		///// 获取产品版本
+		//QueryValue("ProductVersion", module_name, value);
+		//LogTrace("ProductVersion:%s.", value.c_str());
 	}
 }
