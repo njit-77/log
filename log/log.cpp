@@ -124,11 +124,6 @@ std::string execCmd(const char *cmd)
 	return result;
 }
 
-LOG_API void SetLogFileName(const char* file_name)
-{
-	Log::GetInstance().InitLog(file_name);
-}
-
 bool QueryValue(const std::string& ValueName, const std::string& szModuleName, std::string& RetStr)
 {
 	bool bSuccess = FALSE;
@@ -142,23 +137,23 @@ bool QueryValue(const std::string& ValueName, const std::string& szModuleName, s
 			break;
 
 		DWORD dwHandle;
-		// 判断系统能否检索到指定文件的版本信息
+		/// 判断系统能否检索到指定文件的版本信息
 		DWORD dwDataSize = ::GetFileVersionInfoSizeA((LPCSTR)szModuleName.c_str(), &dwHandle);
 		if (dwDataSize == 0)
 			break;
 
-		m_lpVersionData = new (std::nothrow) BYTE[dwDataSize];// 分配缓冲区
+		m_lpVersionData = new (std::nothrow) BYTE[dwDataSize];/// 分配缓冲区
 		if (NULL == m_lpVersionData)
 			break;
 
-		// 检索信息
+		/// 检索信息
 		if (!::GetFileVersionInfoA((LPCSTR)szModuleName.c_str(), dwHandle, dwDataSize,
 			(void*)m_lpVersionData))
 			break;
 
 		UINT nQuerySize;
 		DWORD* pTransTable;
-		// 设置语言
+		/// 设置语言
 		if (!::VerQueryValueA(m_lpVersionData, "\\VarFileInfo\\Translation", (void **)&pTransTable, &nQuerySize))
 			break;
 
@@ -166,20 +161,20 @@ bool QueryValue(const std::string& ValueName, const std::string& szModuleName, s
 		if (m_lpVersionData == NULL)
 			break;
 
-		tmpstr = new (std::nothrow) CHAR[128];// 分配缓冲区
+		tmpstr = new (std::nothrow) CHAR[128];/// 分配缓冲区
 		if (NULL == tmpstr)
 			break;
 		sprintf_s(tmpstr, 128, "\\StringFileInfo\\%08lx\\%s", m_dwLangCharset, ValueName.c_str());
 		LPVOID lpData;
 
-		// 调用此函数查询前需要先依次调用函数GetFileVersionInfoSize和GetFileVersionInfo
+		/// 调用此函数查询前需要先依次调用函数GetFileVersionInfoSize和GetFileVersionInfo
 		if (::VerQueryValueA((void *)m_lpVersionData, tmpstr, &lpData, &nQuerySize))
 			RetStr = (char*)lpData;
 
 		bSuccess = TRUE;
 	} while (FALSE);
 
-	// 销毁缓冲区
+	/// 销毁缓冲区
 	if (m_lpVersionData)
 	{
 		delete[] m_lpVersionData;
@@ -194,12 +189,6 @@ bool QueryValue(const std::string& ValueName, const std::string& szModuleName, s
 	return bSuccess;
 }
 
-HMODULE GetSelfModuleHandle()
-{
-	MEMORY_BASIC_INFORMATION mbi;
-	return ((::VirtualQuery(GetSelfModuleHandle, &mbi, sizeof(mbi)) != 0) ? (HMODULE)mbi.AllocationBase : NULL);
-}
-
 std::string TCHAR2STRING(TCHAR* str)
 {
 	std::string strstr;
@@ -210,7 +199,7 @@ std::string TCHAR2STRING(TCHAR* str)
 	return strstr;
 }
 
-LOG_API void LogOutputSystemMessage()
+void LogOutputSystemMessage(HMODULE hModule)
 {
 	/// OS Information
 	{
@@ -311,14 +300,14 @@ LOG_API void LogOutputSystemMessage()
 	{
 		LogTrace("*********************NetWork Information*********************");
 
-		// PIP_ADAPTER_INFO struct contains network information
+		/// PIP_ADAPTER_INFO struct contains network information
 		PIP_ADAPTER_INFO pIpAdapterInfo = new IP_ADAPTER_INFO();
 		unsigned long adapter_size = sizeof(IP_ADAPTER_INFO);
 		int ret = GetAdaptersInfo(pIpAdapterInfo, &adapter_size);
 
 		if (ret == ERROR_BUFFER_OVERFLOW)
 		{
-			// overflow, use the output size to recreate the handler
+			/// overflow, use the output size to recreate the handler
 			delete pIpAdapterInfo;
 			pIpAdapterInfo = (PIP_ADAPTER_INFO)new BYTE[adapter_size];
 			ret = GetAdaptersInfo(pIpAdapterInfo, &adapter_size);
@@ -328,14 +317,14 @@ LOG_API void LogOutputSystemMessage()
 		{
 			int card_index = 0;
 
-			// may have many cards, it saved in linklist
+			/// may have many cards, it saved in linklist
 			while (pIpAdapterInfo)
 			{
 				LogTrace("-------NetworkCard %d-------", card_index);
 				LogTrace("Network Card Name: %s", pIpAdapterInfo->AdapterName);
 				LogTrace("Network Card Description: %s", pIpAdapterInfo->Description);
 
-				// get IP, one card may have many IPs
+				/// get IP, one card may have many IPs
 				PIP_ADDR_STRING pIpAddr = &(pIpAdapterInfo->IpAddressList);
 				while (pIpAddr)
 				{
@@ -355,11 +344,11 @@ LOG_API void LogOutputSystemMessage()
 					strcpy(local_mac + char_index, temp_str);
 					char_index += 3;
 				}
-				local_mac[17] = '\0'; // remove tail '-'
+				local_mac[17] = '\0'; /// remove tail '-'
 
 				LogTrace("Local Mac: %s", local_mac);
 
-				// here just need the first card info
+				/// here just need the first card info
 				break;
 			}
 		}
@@ -373,40 +362,26 @@ LOG_API void LogOutputSystemMessage()
 		LogTrace("*********************FileAttribute Information*********************");
 
 		TCHAR szBuff[0xff] = { 0 };
-		GetModuleFileName(GetSelfModuleHandle(), szBuff, MAX_PATH);
+		GetModuleFileName(hModule, szBuff, MAX_PATH);
 		std::string module_name = TCHAR2STRING(szBuff);
 
 		std::string value;
 		/// 获取文件说明
 		QueryValue("FileDescription", module_name, value);
-		LogTrace("FileDescription:%s.", value.c_str());
+		LogTrace("FileDescription：%s", value.c_str());
 
 		/// 获取文件版本
 		QueryValue("FileVersion", module_name, value);
-		LogTrace("FileVersion:%s.", value.c_str());
+		LogTrace("FileVersion：%s", value.c_str());
 
-		///// 获取内部名称
-		//QueryValue("InternalName", module_name, value);
-		//LogTrace("InternalName:%s.", value.c_str());
-
-		///// 获取公司名称
-		//QueryValue("CompanyName", module_name, value);
-		//LogTrace("CompanyName:%s.", value.c_str());
-
-		///// 获取版权
-		//QueryValue("LegalCopyright", module_name, value);
-		//LogTrace("LegalCopyright:%s.", value.c_str());
-
-		///// 获取原始文件名
-		//QueryValue("OriginalFilename", module_name, value);
-		//LogTrace("OriginalFilename:%s.", value.c_str());
-
-		///// 获取产品名称
-		//QueryValue("ProductName", module_name, value);
-		//LogTrace("ProductName:%s.", value.c_str());
-
-		///// 获取产品版本
-		//QueryValue("ProductVersion", module_name, value);
-		//LogTrace("ProductVersion:%s.", value.c_str());
+		/// 获取产品名称
+		QueryValue("ProductName", module_name, value);
+		LogTrace("ProductName：%s", value.c_str());
 	}
+}
+
+LOG_API void SetLogFileName(const char* file_name, HMODULE hModule)
+{
+	Log::GetInstance().InitLog(file_name);
+	LogOutputSystemMessage(hModule);
 }

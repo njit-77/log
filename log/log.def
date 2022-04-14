@@ -9,6 +9,4 @@ EXPORTS
 	LogError
 	LogCritical
 	SetLogLevel
-	;
 	SetLogFileName
-	LogOutputSystemMessage

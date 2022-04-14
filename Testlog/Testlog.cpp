@@ -29,16 +29,14 @@ enum level_enum
 	off = 6,
 };
 LOG_API void SetLogLevel(int level);
-LOG_API void SetLogFileName(const char* file_name);
-LOG_API void LogOutputSystemMessage();
+LOG_API void SetLogFileName(const char* file_name, HMODULE hModule);
 
 int main()
 {
 	SYSTEMTIME sys;
 	GetLocalTime(&sys);
 
-	SetLogFileName("Testlog");
-	LogOutputSystemMessage();
+	SetLogFileName("Testlog", NULL);
 
 	for (int i = 0; i < level_enum::off; i++)
 	{
