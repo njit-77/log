@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define LOG_PATH  "./log/"
 
@@ -7,7 +7,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/daily_file_sink.h"
 
-/// 1¡¢2022-01-18 ¸üÐÂspdlog°æ±¾£¬ÓÉ1.5.0->1.9.2
+/// 1ã€2022-01-18 æ›´æ–°spdlogç‰ˆæœ¬ï¼Œç”±1.5.0->1.9.2
 
 class Log
 {
