@@ -224,7 +224,7 @@ namespace Hardware_Information
 					/// 确保是以太网
 					if (pAdapter->Type != MIB_IF_TYPE_ETHERNET
 						|| pAdapter->Type == 71
-						|| strstr(pAdapter->Description, "Bluetooth") > 0)
+						|| strstr(pAdapter->Description, "Bluetooth") != nullptr)
 					{
 						continue;
 					}
@@ -238,7 +238,7 @@ namespace Hardware_Information
 					PIP_ADDR_STRING pIpAddr = &(pAdapter->IpAddressList);
 					char local_mac[128] = { 0 };
 					int char_index = 0;
-					for (int i = 0; i < pAdapter->AddressLength; i++)
+					for (int i = 0; i < (int)pAdapter->AddressLength; i++)
 					{
 						char temp_str[10] = { 0 };
 						sprintf(temp_str, "%02X-", pAdapter->Address[i]);
@@ -478,8 +478,20 @@ namespace Hardware_Information
 
 void LogOutputSystemMessage(HMODULE hModule)
 {
-	LogTrace("\n\n\n");
-	LogTrace("******************************************");
+	LogTrace("**********************永不宕机      永无BUG**********************");
+	LogTrace("┌─────────────────────────────────────────────────────────────┐");
+	LogTrace("│┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐│");
+	LogTrace("││Esc│!1 │@2 │#3 │$4 │%%5 │^6 │&7 │*8 │(9 │)0 │_- │+= │|\\ │`~ ││");
+	LogTrace("│├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┤│");
+	LogTrace("││ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{[ │}] │ BS  ││");
+	LogTrace("│├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤│");
+	LogTrace("││ Ctrl │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│\" '│ Enter  ││");
+	LogTrace("│├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┤│");
+	LogTrace("││ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│Shift │Fn ││");
+	LogTrace("│└─────┬──┴┬──┴──┬┴───┴───┴───┴───┴───┴──┬┴───┴┬──┴┬─────┴───┘│");
+	LogTrace("│      │Fn │ Alt │         Space         │ Alt │Win│   HHKB   │");
+	LogTrace("│      └───┴─────┴───────────────────────┴─────┴───┘          │");
+	LogTrace("└─────────────────────────────────────────────────────────────┘");
 
 	Hardware_Information::getOSInfo();
 
@@ -489,7 +501,7 @@ void LogOutputSystemMessage(HMODULE hModule)
 
 	Hardware_Information::getNetworkInfo();
 
-	Hardware_Information::getGPUInfo();
+	//Hardware_Information::getGPUInfo();
 
 	Hardware_Information::getHardDiskInfo();
 
