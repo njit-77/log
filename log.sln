@@ -1,11 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.87
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "log", "log\log.vcxproj", "{5B8ECAD0-6209-4D1E-B6CA-0068289FE9F1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Testlog", "Testlog\Testlog.vcxproj", "{EA1FB153-A378-46C0-92ED-06EAC4D65107}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B8ECAD0-6209-4D1E-B6CA-0068289FE9F1} = {5B8ECAD0-6209-4D1E-B6CA-0068289FE9F1}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B748E7F2-6F46-4E93-9E26-5DB5B8099022}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8A060243-CDA7-4649-9F44-7A6B388C6D61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +41,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B8ECAD0-6209-4D1E-B6CA-0068289FE9F1} = {B748E7F2-6F46-4E93-9E26-5DB5B8099022}
+		{EA1FB153-A378-46C0-92ED-06EAC4D65107} = {8A060243-CDA7-4649-9F44-7A6B388C6D61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D8E2647E-4825-4D9C-98BF-36888A570995}
