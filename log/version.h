@@ -1,8 +1,8 @@
 //Auto generate file version 
-#define	LOG_Major_Version	2023	
-#define	LOG_Minor_Version	07	
-#define	LOG_Revsion_Version	22	
-#define	LOG_RevNum_Version	16 
-#define	LOG_Git_Info	"270d4d1fb352fd703f80dbe241ac0f61c0d6a73e" 
-#define	LOG_Product_Version	"2023.07.22.16" 
-#define	LOG_File_Description	"270d4d1  2023.07.22 /  7:17:44.78" 
+#define	LOG_Major_Version	2024	
+#define	LOG_Minor_Version	04	
+#define	LOG_Revsion_Version	07	
+#define	LOG_RevNum_Version	17 
+#define	LOG_Git_Info	"ff67f800fe58ae2a32a7d35317138c0cf66b7830" 
+#define	LOG_Product_Version	"2024.04.07.17" 
+#define	LOG_File_Description	"ff67f80  2024.04.07 /  9:44:40.00" 
