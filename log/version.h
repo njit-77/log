@@ -1,8 +1,9 @@
-//Auto generate file version 
-#define	LOG_Major_Version	2024	
-#define	LOG_Minor_Version	04	
-#define	LOG_Revsion_Version	07	
-#define	LOG_RevNum_Version	17 
-#define	LOG_Git_Info	"ff67f800fe58ae2a32a7d35317138c0cf66b7830" 
-#define	LOG_Product_Version	"2024.04.07.17" 
-#define	LOG_File_Description	"ff67f80  2024.04.07 /  9:44:40.00" 
+#pragma once
+
+#define LOG_VER_MAJOR 1
+#define LOG_VER_MINOR 2
+#define LOG_VER_PATCH 0
+
+#define NUM2STR(v) #v
+#define VERSTR4NUM(ma, mi, pa, pb) NUM2STR(ma) "." NUM2STR(mi) "." NUM2STR(pa) "." NUM2STR(pb)
+#define LOG_VERSION VERSTR4NUM(LOG_VER_MAJOR, LOG_VER_MINOR, LOG_VER_PATCH, 0)

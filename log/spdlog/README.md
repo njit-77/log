@@ -1,18 +1,25 @@
 # spdlog
 
-Very fast, header-only/compiled, C++ logging library. [![ci](https://github.com/gabime/spdlog/actions/workflows/ci.yml/badge.svg)](https://github.com/gabime/spdlog/actions/workflows/ci.yml)&nbsp; [![Build status](https://ci.appveyor.com/api/projects/status/d2jnxclg20vd0o50?svg=true&branch=v1.x)](https://ci.appveyor.com/project/gabime/spdlog) [![Release](https://img.shields.io/github/release/gabime/spdlog.svg)](https://github.com/gabime/spdlog/releases/latest)
+ 
+[![ci](https://github.com/gabime/spdlog/actions/workflows/linux.yml/badge.svg)](https://github.com/gabime/spdlog/actions/workflows/linux.yml)&nbsp;
+[![ci](https://github.com/gabime/spdlog/actions/workflows/windows.yml/badge.svg)](https://github.com/gabime/spdlog/actions/workflows/windows.yml)&nbsp;
+[![ci](https://github.com/gabime/spdlog/actions/workflows/macos.yml/badge.svg)](https://github.com/gabime/spdlog/actions/workflows/macos.yml)&nbsp;
+[![Build status](https://ci.appveyor.com/api/projects/status/d2jnxclg20vd0o50?svg=true&branch=v1.x)](https://ci.appveyor.com/project/gabime/spdlog) [![Release](https://img.shields.io/github/release/gabime/spdlog.svg)](https://github.com/gabime/spdlog/releases/latest)
+
+Fast C++ logging library
+
 
 ## Install
 #### Header-only version
-Copy the include [folder](https://github.com/gabime/spdlog/tree/v1.x/include/spdlog) to your build tree and use a C++11 compiler.
+Copy the include [folder](include/spdlog) to your build tree and use a C++11 compiler.
 
 #### Compiled version (recommended - much faster compile times)
 ```console
 $ git clone https://github.com/gabime/spdlog.git
 $ cd spdlog && mkdir build && cd build
-$ cmake .. && make -j
+$ cmake .. && cmake --build .
 ```
-see example [CMakeLists.txt](https://github.com/gabime/spdlog/blob/v1.x/example/CMakeLists.txt) on how to use.
+see example [CMakeLists.txt](example/CMakeLists.txt) on how to use.
 
 ## Platforms
 * Linux, FreeBSD, OpenBSD, Solaris, AIX
@@ -29,8 +36,9 @@ see example [CMakeLists.txt](https://github.com/gabime/spdlog/blob/v1.x/example/
 * Gentoo: `emerge dev-libs/spdlog`
 * Arch Linux: `pacman -S spdlog`
 * openSUSE: `sudo zypper in spdlog-devel`
+* ALT Linux: `apt-get install libspdlog-devel`
 * vcpkg: `vcpkg install spdlog`
-* conan: `spdlog/[>=1.4.1]`
+* conan: `conan install --requires=spdlog/[*]`
 * conda: `conda install -c conda-forge spdlog`
 * build2: ```depends: spdlog ^1.8.2```
 
@@ -40,7 +48,7 @@ see example [CMakeLists.txt](https://github.com/gabime/spdlog/blob/v1.x/example/
 * Headers only or compiled
 * Feature-rich formatting, using the excellent [fmt](https://github.com/fmtlib/fmt) library.
 * Asynchronous mode (optional)
-* [Custom](https://github.com/gabime/spdlog/wiki/3.-Custom-formatting) formatting.
+* [Custom](https://github.com/gabime/spdlog/wiki/Custom-formatting) formatting.
 * Multi/Single threaded loggers.
 * Various log targets:
   * Rotating log files.
@@ -50,7 +58,7 @@ see example [CMakeLists.txt](https://github.com/gabime/spdlog/blob/v1.x/example/
   * Windows event log.
   * Windows debugger (```OutputDebugString(..)```).
   * Log to Qt widgets ([example](#log-to-qt-with-nice-colors)).
-  * Easily [extendable](https://github.com/gabime/spdlog/wiki/4.-Sinks#implementing-your-own-sink) with custom log targets.
+  * Easily [extendable](https://github.com/gabime/spdlog/wiki/Sinks#implementing-your-own-sink) with custom log targets.
 * Log filtering - log levels can be modified at runtime as well as compile time.
 * Support for loading log levels from argv or environment var.
 * [Backtrace](#backtrace-support) support - store debug messages in a ring buffer and display them later on demand.
@@ -72,14 +80,15 @@ int main()
     spdlog::info("Positional args are {1} {0}..", "too", "supported");
     spdlog::info("{:<30}", "left aligned");
     
-    spdlog::set_level(spdlog::level::debug); // Set global log level to debug
+    spdlog::set_level(spdlog::level::debug); // Set *global* log level to debug
     spdlog::debug("This message should be displayed..");    
     
     // change log pattern
     spdlog::set_pattern("[%H:%M:%S %z] [%n] [%^---%L---%$] [thread %t] %v");
     
     // Compile time log levels
-    // define SPDLOG_ACTIVE_LEVEL to desired level
+    // Note that this does not change the current log level, it will only
+    // remove (depending on SPDLOG_ACTIVE_LEVEL) the call on the release code.
     SPDLOG_TRACE("Some trace message with param {}", 42);
     SPDLOG_DEBUG("Some debug message");
 }
@@ -215,7 +224,7 @@ void binary_example()
 ```c++
 
 // create a logger with 2 targets, with different log levels and formats.
-// The console will show only warnings or errors, while the file will log all.
+// The console will show only warnings or errors, while the file will log all. 
 void multi_sink_example()
 {
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -229,6 +238,29 @@ void multi_sink_example()
     logger.set_level(spdlog::level::debug);
     logger.warn("this should appear in both console and file");
     logger.info("this message should not appear in the console, only in the file");
+}
+```
+
+---
+#### Register several loggers - change global level
+```c++
+
+// Creation of loggers. Set levels to all registered loggers. 
+void set_level_example()
+{
+    auto logger1 = spdlog::basic_logger_mt("logger1", "logs/logger1.txt");
+    auto logger2 = spdlog::basic_logger_mt("logger2", "logs/logger2.txt");
+
+    spdlog::set_default_logger(logger2);
+    spdlog::default_logger()->set_level(spdlog::level::trace); // set level for the default logger (logger2) to trace
+
+    spdlog::trace("trace message to the logger2 (specified as default)");
+
+    spdlog::set_level(spdlog::level::off) // (sic!) set level for *all* registered loggers to off (disable)
+  
+    logger1.warn("warn message will not appear because the level set to off");
+    logger2.warn("warn message will not appear because the level set to off");
+    spdlog::warn("warn message will not appear because the level set to off");
 }
 ```
 
@@ -272,6 +304,7 @@ void async_example()
 ---
 #### Asynchronous logger with multi sinks
 ```c++
+#include "spdlog/async.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 
@@ -294,7 +327,7 @@ struct fmt::formatter<my_type> : fmt::formatter<std::string>
 {
     auto format(my_type my, format_context &ctx) const -> decltype(ctx.out())
     {
-        return format_to(ctx.out(), "[my_type i={}]", my.i);
+        return fmt::format_to(ctx.out(), "[my_type i={}]", my.i);
     }
 };
 
@@ -378,6 +411,9 @@ void android_example()
 int main (int argc, char *argv[])
 {
     spdlog::cfg::load_env_levels();
+    // or specify the env variable name:
+    // MYAPP_LEVEL=info,mylogger=trace && ./example
+    // spdlog::cfg::load_env_levels("MYAPP_LEVEL");
     // or from the command line:
     // ./example SPDLOG_LEVEL=info,mylogger=trace
     // #include "spdlog/cfg/argv.h" // for loading levels from argv
@@ -435,11 +471,26 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     logger->info("Some info message");
 }
 ```
+---
 
+#### Mapped Diagnostic Context
+```c++
+// Mapped Diagnostic Context (MDC) is a map that stores key-value pairs (string values) in thread local storage.
+// Each thread maintains its own MDC, which loggers use to append diagnostic information to log outputs.
+// Note: it is not supported in asynchronous mode due to its reliance on thread-local storage.
+#include "spdlog/mdc.h"
+void mdc_example()
+{
+    spdlog::mdc::put("key1", "value1");
+    spdlog::mdc::put("key2", "value2");
+    // if not using the default format, use the %& formatter to print mdc data
+    // spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [%&] %v");
+}
+```
 ---
 ## Benchmarks
 
-Below are some [benchmarks](https://github.com/gabime/spdlog/blob/v1.x/bench/bench.cpp) done in Ubuntu 64 bit, Intel i7-4770 CPU @ 3.40GHz
+Below are some [benchmarks](bench/bench.cpp) done in Ubuntu 64 bit, Intel i7-4770 CPU @ 3.40GHz
 
 #### Synchronous mode
 ```
@@ -491,10 +542,12 @@ Below are some [benchmarks](https://github.com/gabime/spdlog/blob/v1.x/bench/ben
 ```
 
 ## Documentation
-Documentation can be found in the [wiki](https://github.com/gabime/spdlog/wiki/1.-QuickStart) pages.
+
+Documentation can be found in the [wiki](https://github.com/gabime/spdlog/wiki) pages.
 
 ---
 
-Thanks to [JetBrains](https://www.jetbrains.com/?from=spdlog) for donating product licenses to help develop **spdlog** <a href="https://www.jetbrains.com/?from=spdlog"><img src="logos/jetbrains-variant-4.svg" width="94" align="center" /></a>
-
-
+### Powered by
+<a href="https://jb.gg/OpenSource">
+  <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg" alt="JetBrains logo" width="200">
+</a>

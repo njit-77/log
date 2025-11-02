@@ -49,9 +49,6 @@
     <None Include="log.def">
       <Filter>源文件</Filter>
     </None>
-    <None Include="version.cmd">
-      <Filter>version</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="log.rc">
