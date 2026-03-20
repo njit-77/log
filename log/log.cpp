@@ -92,7 +92,7 @@ LOG_API void SetLogLevel(int level)
 {
 	if (level < spdlog::level::trace) level = spdlog::level::trace;
 	if (level > spdlog::level::off) level = spdlog::level::off;
-	spdlog::set_level((spdlog::level::level_enum)level);
+	Log::GetInstance().GetLogger()->set_level((spdlog::level::level_enum)level);
 }
 
 namespace Hardware_Information
@@ -117,7 +117,7 @@ namespace Hardware_Information
 #pragma comment(lib, "version")
 
 	template<typename ... Args>
-	std::string format_string(const std::string &format, Args ... args)
+	std::string format_string(const std::string& format, Args ... args)
 	{
 		auto size_buf = std::snprintf(nullptr, 0, format.c_str(), args ...) + 1;
 		std::unique_ptr<char[]> buf(new(std::nothrow) char[size_buf]);
@@ -261,7 +261,7 @@ namespace Hardware_Information
 		}
 	}
 
-	std::string WStringToString(const std::wstring &wstr)
+	std::string WStringToString(const std::wstring& wstr)
 	{
 		std::string str(wstr.length(), ' ');
 		std::copy(wstr.begin(), wstr.end(), str.begin());
@@ -271,8 +271,8 @@ namespace Hardware_Information
 	void getGPUInfo()
 	{
 		/// 参数定义  
-		IDXGIFactory * pFactory;
-		IDXGIAdapter * pAdapter;
+		IDXGIFactory* pFactory;
+		IDXGIAdapter* pAdapter;
 		std::vector <IDXGIAdapter*> vAdapters;
 		int iAdapterNum = 0;
 
@@ -305,7 +305,7 @@ namespace Hardware_Information
 				bb.c_str());
 
 			/// 输出设备  
-			IDXGIOutput * pOutput;
+			IDXGIOutput* pOutput;
 			std::vector<IDXGIOutput*> vOutputs;
 			/// 输出设备数量  
 			int iOutputNum = 0;
@@ -327,7 +327,7 @@ namespace Hardware_Information
 				UINT flags = DXGI_ENUM_MODES_INTERLACED;
 
 				vOutputs[n]->GetDisplayModeList(format, flags, &uModeNum, 0);
-				DXGI_MODE_DESC * pModeDescs = new DXGI_MODE_DESC[uModeNum];
+				DXGI_MODE_DESC* pModeDescs = new DXGI_MODE_DESC[uModeNum];
 				vOutputs[n]->GetDisplayModeList(format, flags, &uModeNum, pModeDescs);
 
 				videocard_info.append(format_string("\n显示器%d分辨率：%d * %d.", n + 1,
@@ -341,11 +341,11 @@ namespace Hardware_Information
 		vAdapters.clear();
 	}
 
-	std::string execCmd(const char *cmd)
+	std::string execCmd(const char* cmd)
 	{
 		char buffer[128] = { 0 };
 		std::string result;
-		FILE *pipe = _popen(cmd, "r");
+		FILE* pipe = _popen(cmd, "r");
 		if (!pipe)
 			throw std::runtime_error("_popen() failed!");
 		while (!feof(pipe))
@@ -387,9 +387,9 @@ namespace Hardware_Information
 	bool QueryValue(const std::string& ValueName, const std::string& szModuleName, std::string& RetStr)
 	{
 		bool bSuccess = FALSE;
-		BYTE*  m_lpVersionData = NULL;
+		BYTE* m_lpVersionData = NULL;
 		DWORD   m_dwLangCharset = 0;
-		CHAR *tmpstr = NULL;
+		CHAR* tmpstr = NULL;
 
 		do
 		{
@@ -414,7 +414,7 @@ namespace Hardware_Information
 			UINT nQuerySize;
 			DWORD* pTransTable;
 			/// 设置语言
-			if (!::VerQueryValueA(m_lpVersionData, "\\VarFileInfo\\Translation", (void **)&pTransTable, &nQuerySize))
+			if (!::VerQueryValueA(m_lpVersionData, "\\VarFileInfo\\Translation", (void**)&pTransTable, &nQuerySize))
 				break;
 
 			m_dwLangCharset = MAKELONG(HIWORD(pTransTable[0]), LOWORD(pTransTable[0]));
@@ -428,7 +428,7 @@ namespace Hardware_Information
 			LPVOID lpData;
 
 			/// 调用此函数查询前需要先依次调用函数GetFileVersionInfoSize和GetFileVersionInfo
-			if (::VerQueryValueA((void *)m_lpVersionData, tmpstr, &lpData, &nQuerySize))
+			if (::VerQueryValueA((void*)m_lpVersionData, tmpstr, &lpData, &nQuerySize))
 				RetStr = (char*)lpData;
 
 			bSuccess = TRUE;
@@ -456,23 +456,23 @@ namespace Hardware_Information
 
 		std::string module_name = TCHAR2STRING(szBuff);
 
-		/// 获取文件说明
-		std::string file_description;
-		QueryValue("FileDescription", module_name, file_description);
-		LogTrace("[FileInfo]FileDescription：%s.",
-			file_description.c_str());
-
-		/// 获取文件版本
-		std::string file_version;
-		QueryValue("FileVersion", module_name, file_version);
-		LogTrace("[FileInfo]FileVersion：%s.",
-			file_version.c_str());
+		///// 获取文件说明
+		//std::string file_description;
+		//QueryValue("FileDescription", module_name, file_description);
+		//LogTrace("[FileInfo]FileDescription：%s.",
+		//	file_description.c_str());
 
 		/// 获取产品名称
 		std::string product_name;
 		QueryValue("ProductName", module_name, product_name);
 		LogTrace("[FileInfo]ProductName：%s.",
 			product_name.c_str());
+
+		/// 获取文件版本
+		std::string file_version;
+		QueryValue("ProductVersion", module_name, file_version);
+		LogTrace("[FileInfo]ProductVersion：%s.",
+			file_version.c_str());
 	}
 }
 
@@ -501,15 +501,15 @@ void LogOutputSystemMessage(HMODULE hModule)
 
 	Hardware_Information::getNetworkInfo();
 
-	//Hardware_Information::getGPUInfo();
+	Hardware_Information::getGPUInfo();
 
 	Hardware_Information::getHardDiskInfo();
 
 	Hardware_Information::getFileInfo(hModule);
 }
 
-LOG_API void SetLogFileName(const char* file_name, HMODULE hModule)
+LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console)
 {
-	Log::GetInstance().InitLog(file_name);
+	Log::GetInstance().InitLog(file_name, console);
 	LogOutputSystemMessage(hModule);
 }

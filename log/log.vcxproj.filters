@@ -27,9 +27,6 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="version.h">
-      <Filter>version</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -41,13 +38,13 @@
     <ClCompile Include="log.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="log.def">
       <Filter>源文件</Filter>
+    </None>
+    <None Include="version.cmd">
+      <Filter>version</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

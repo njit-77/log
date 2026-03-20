@@ -29,24 +29,26 @@ enum level_enum
 	off = 6,
 };
 LOG_API void SetLogLevel(int level);
-LOG_API void SetLogFileName(const char* file_name, HMODULE hModule);
+LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console);
 
 int main()
 {
+	SetConsoleOutputCP(CP_UTF8);
+
 	SYSTEMTIME sys;
 	GetLocalTime(&sys);
 
-	SetLogFileName("Testlog", NULL);
+	SetLogFileName("Testlog", GetModuleHandle(TEXT("log.dll")), true);
 
 	for (int i = 0; i < level_enum::off; i++)
 	{
 		SetLogLevel(i);
-		LogTrace("[SetLogTrace]This is a Trace Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-		LogDebug("[SetLogTrace]This is a Debug Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-		LogInfo("[SetLogTrace]This is a Info Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-		LogWarn("[SetLogTrace]This is a Warn Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-		LogError("[SetLogTrace]This is a Error Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
-		LogCritical("[SetLogTrace]This is a Critical Log, Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
+		LogTrace("This is a Trace Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogDebug("This is a Debug Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogInfo("This is a Info Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogWarn("This is a Warn Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogError("This is a Error Log, Today[%d-%d-%d] is the day, 天气不错.", sys.wYear, sys.wMonth, sys.wDay);
+		LogCritical("This is a Critical Log, Today[%d-%d-%d] is the day, 天气不错.\n", sys.wYear, sys.wMonth, sys.wDay);
 	}
 	system("pause");
 }

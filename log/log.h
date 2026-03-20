@@ -10,10 +10,10 @@
 #include <algorithm>
 #include <functional>
 
-
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/daily_file_sink.h"
-
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/daily_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/async.h>
 
 class Log
 {
@@ -25,17 +25,28 @@ public:
 		return m_instance;
 	}
 
-	void InitLog(const char* file_name = "log")
+	void InitLog(const char* file_name = "log", bool console = false)
 	{
 		std::string full_file_name;
 		full_file_name.append(LOG_PATH).append(file_name).append(".log");
 
-		auto logger_name = generate_hex(16);
-		logger = spdlog::daily_logger_mt(logger_name, full_file_name, 0, 0);
+		if (console)
+		{
+			auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(full_file_name, 0, 0);
+			auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 
-		logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e]	ThreadId:%5t Loglevel:%8l |	%v");
+			logger = std::make_shared<spdlog::logger>("multi_sink",
+				spdlog::sinks_init_list{ daily_sink, console_sink });
+		}
+		else
+		{
+			auto logger_name = generate_hex(16);
+			logger = spdlog::daily_logger_mt(logger_name, full_file_name, 0, 0);
+		}
 
-		logger->flush_on(spdlog::level::trace);
+		logger->set_pattern("%Y-%m-%d %H:%M:%S.%e	[ThreadId:%5t]	[Loglevel:%8l]	%v");
+		logger->set_level(spdlog::level::trace);
+		logger->flush_on(spdlog::level::err);
 	}
 
 	inline auto GetLogger()
@@ -49,14 +60,16 @@ public:
 
 private:
 
+	Log(const Log&) = delete;
+
+	Log& operator=(const Log&) = delete;
+
 	Log()
 	{
 		if (_access(LOG_PATH, 0) != 0)
 		{
 			_mkdir(LOG_PATH);
 		}
-
-		spdlog::set_level(spdlog::level::trace);
 	}
 
 	~Log()
@@ -64,7 +77,7 @@ private:
 		spdlog::shutdown();
 	}
 
-	unsigned char random_char() 
+	unsigned char random_char()
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -72,10 +85,10 @@ private:
 		return static_cast<unsigned char>(dis(gen));
 	}
 
-	std::string generate_hex(const unsigned int len) 
+	std::string generate_hex(const unsigned int len)
 	{
 		std::stringstream ss;
-		for (auto i = 0; i < len; i++) 
+		for (auto i = 0; i < len; i++)
 		{
 			auto rc = random_char();
 			std::stringstream hexstream;
@@ -85,10 +98,6 @@ private:
 		}
 		return ss.str();
 	}
-
-	Log(const Log&) = delete;
-
-	Log& operator=(const Log&) = delete;
 
 private:
 	std::shared_ptr<spdlog::logger> logger;
