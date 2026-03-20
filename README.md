@@ -1,8 +1,8 @@
 # log
 
-This is a simple encapsulation based on the open-source library [spdlog](https://github.com/gabime/spdlog) (1.16.0), which facilitates a unified logging interface for multiple projects (C++/C#).
+This is a simple encapsulation based on the open-source library [spdlog](https://github.com/gabime/spdlog) (1.17.0), which facilitates a unified logging interface for multiple projects (C++/C#).
 
-基于开源库[spdlog](https://github.com/gabime/spdlog)(1.16.0)简单封装，方便多工程(c++/c#)统一日志接口。
+基于开源库[spdlog](https://github.com/gabime/spdlog)(1.17.0)简单封装，方便多工程(c++/c#)统一日志接口。
 
 
 
