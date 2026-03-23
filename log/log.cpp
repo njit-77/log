@@ -1,7 +1,7 @@
 ﻿#include "log.h"
 
 
-void LogOutputSystemMessage(HMODULE hModule);
+void LogOutputSystemMessage(HMODULE hModule, bool topMsg);
 
 
 #ifdef LOG_EXPORTS
@@ -84,10 +84,10 @@ LOG_API void SetLogLevel(int level)
 	Log::GetInstance().GetLogger()->set_level((spdlog::level::level_enum)level);
 }
 
-LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console)
+LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console, bool topMsg)
 {
 	Log::GetInstance().InitLog(file_name, console);
-	LogOutputSystemMessage(hModule);
+	LogOutputSystemMessage(hModule, topMsg);
 }
 
 namespace Hardware_Information
@@ -471,22 +471,25 @@ namespace Hardware_Information
 	}
 }
 
-void LogOutputSystemMessage(HMODULE hModule)
+void LogOutputSystemMessage(HMODULE hModule, bool topMsg)
 {
-	LogTrace("**********************永不宕机      永无BUG**********************");
-	LogTrace("┌─────────────────────────────────────────────────────────────┐");
-	LogTrace("│┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐│");
-	LogTrace("││Esc│!1 │@2 │#3 │$4 │%%5 │^6 │&7 │*8 │(9 │)0 │_- │+= │|\\ │`~ ││");
-	LogTrace("│├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┤│");
-	LogTrace("││ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{{[ │}}] │ BS  ││");
-	LogTrace("│├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤│");
-	LogTrace("││ Ctrl │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│\" '│ Enter  ││");
-	LogTrace("│├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┤│");
-	LogTrace("││ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│Shift │Fn ││");
-	LogTrace("│└─────┬──┴┬──┴──┬┴───┴───┴───┴───┴───┴──┬┴───┴┬──┴┬─────┴───┘│");
-	LogTrace("│      │Fn │ Alt │         Space         │ Alt │Win│   HHKB   │");
-	LogTrace("│      └───┴─────┴───────────────────────┴─────┴───┘          │");
-	LogTrace("└─────────────────────────────────────────────────────────────┘");
+	if (topMsg)
+	{
+		LogTrace("**********************永不宕机      永无BUG**********************");
+		LogTrace("┌─────────────────────────────────────────────────────────────┐");
+		LogTrace("│┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐│");
+		LogTrace("││Esc│!1 │@2 │#3 │$4 │%5 │^6 │&7 │*8 │(9 │)0 │_- │+= │|\\ │`~ ││");
+		LogTrace("│├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┤│");
+		LogTrace("││ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{{[ │}}] │ BS  ││");
+		LogTrace("│├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤│");
+		LogTrace("││ Ctrl │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│\" '│ Enter  ││");
+		LogTrace("│├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┤│");
+		LogTrace("││ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│Shift │Fn ││");
+		LogTrace("│└─────┬──┴┬──┴──┬┴───┴───┴───┴───┴───┴──┬┴───┴┬──┴┬─────┴───┘│");
+		LogTrace("│      │Fn │ Alt │         Space         │ Alt │Win│   HHKB   │");
+		LogTrace("│      └───┴─────┴───────────────────────┴─────┴───┘          │");
+		LogTrace("└─────────────────────────────────────────────────────────────┘");
+	}
 
 	Hardware_Information::getOSInfo();
 
