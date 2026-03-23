@@ -11,7 +11,7 @@ echo #define VERSTR4NUM(ma, mi, pa, pb) NUM2STR(ma) "." NUM2STR(mi) "." NUM2STR(
 echo
 echo #define LOG_VER_MAJOR 1	>> %revfile%
 echo #define LOG_VER_MINOR 3	>> %revfile%
-echo #define LOG_VER_PATCH 0	>> %revfile%
+echo #define LOG_VER_PATCH 1	>> %revfile%
 
 echo #define LOG_VERSION VERSTR4NUM(LOG_VER_MAJOR, LOG_VER_MINOR, LOG_VER_PATCH, 0)	>> %revfile%
 echo #define LOG_ASSEMBLY_VERSION LOG_VERSION " + %HEAD%"	>> %revfile%

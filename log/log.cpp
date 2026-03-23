@@ -1,24 +1,23 @@
 ﻿#include "log.h"
 
 
+void LogOutputSystemMessage(HMODULE hModule);
+
+
 #ifdef LOG_EXPORTS
 #define LOG_API __declspec(dllexport)
 #else
 #define LOG_API __declspec(dllimport)
 #endif
 
-#define LOGBUF 1024
-
 
 LOG_API void LogTrace(const char* m, ...)
 {
 	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::trace)
 	{
-		char strLogBuf[LOGBUF] = { 0 };
 		va_list arg_list;
 		va_start(arg_list, m);
-		vsprintf_s(strLogBuf, m, arg_list);
-		Log::GetInstance().GetLogger()->trace(strLogBuf);
+		Log::GetInstance().GetLogger()->debug(m, arg_list);
 		va_end(arg_list);
 	}
 }
@@ -27,11 +26,9 @@ LOG_API void LogDebug(const char* m, ...)
 {
 	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::debug)
 	{
-		char strLogBuf[LOGBUF] = { 0 };
 		va_list arg_list;
 		va_start(arg_list, m);
-		vsprintf_s(strLogBuf, m, arg_list);
-		Log::GetInstance().GetLogger()->debug(strLogBuf);
+		Log::GetInstance().GetLogger()->debug(m, arg_list);
 		va_end(arg_list);
 	}
 }
@@ -40,11 +37,9 @@ LOG_API void LogInfo(const char* m, ...)
 {
 	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::info)
 	{
-		char strLogBuf[LOGBUF] = { 0 };
 		va_list arg_list;
 		va_start(arg_list, m);
-		vsprintf_s(strLogBuf, m, arg_list);
-		Log::GetInstance().GetLogger()->info(strLogBuf);
+		Log::GetInstance().GetLogger()->info(m, arg_list);
 		va_end(arg_list);
 	}
 }
@@ -53,11 +48,9 @@ LOG_API void LogWarn(const char* m, ...)
 {
 	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::warn)
 	{
-		char strLogBuf[LOGBUF] = { 0 };
 		va_list arg_list;
 		va_start(arg_list, m);
-		vsprintf_s(strLogBuf, m, arg_list);
-		Log::GetInstance().GetLogger()->warn(strLogBuf);
+		Log::GetInstance().GetLogger()->warn(m, arg_list);
 		va_end(arg_list);
 	}
 }
@@ -66,11 +59,9 @@ LOG_API void LogError(const char* m, ...)
 {
 	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::err)
 	{
-		char strLogBuf[LOGBUF] = { 0 };
 		va_list arg_list;
 		va_start(arg_list, m);
-		vsprintf_s(strLogBuf, m, arg_list);
-		Log::GetInstance().GetLogger()->error(strLogBuf);
+		Log::GetInstance().GetLogger()->error(m, arg_list);
 		va_end(arg_list);
 	}
 }
@@ -79,11 +70,9 @@ LOG_API void LogCritical(const char* m, ...)
 {
 	if (Log::GetInstance().GetLogger()->level() <= spdlog::level::critical)
 	{
-		char strLogBuf[LOGBUF] = { 0 };
 		va_list arg_list;
 		va_start(arg_list, m);
-		vsprintf_s(strLogBuf, m, arg_list);
-		Log::GetInstance().GetLogger()->critical(strLogBuf);
+		Log::GetInstance().GetLogger()->critical(m, arg_list);
 		va_end(arg_list);
 	}
 }
@@ -93,6 +82,12 @@ LOG_API void SetLogLevel(int level)
 	if (level < spdlog::level::trace) level = spdlog::level::trace;
 	if (level > spdlog::level::off) level = spdlog::level::off;
 	Log::GetInstance().GetLogger()->set_level((spdlog::level::level_enum)level);
+}
+
+LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console)
+{
+	Log::GetInstance().InitLog(file_name, console);
+	LogOutputSystemMessage(hModule);
 }
 
 namespace Hardware_Information
@@ -483,7 +478,7 @@ void LogOutputSystemMessage(HMODULE hModule)
 	LogTrace("│┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐│");
 	LogTrace("││Esc│!1 │@2 │#3 │$4 │%%5 │^6 │&7 │*8 │(9 │)0 │_- │+= │|\\ │`~ ││");
 	LogTrace("│├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┤│");
-	LogTrace("││ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{[ │}] │ BS  ││");
+	LogTrace("││ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{{[ │}}] │ BS  ││");
 	LogTrace("│├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤│");
 	LogTrace("││ Ctrl │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│\" '│ Enter  ││");
 	LogTrace("│├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────┬───┤│");
@@ -506,10 +501,4 @@ void LogOutputSystemMessage(HMODULE hModule)
 	Hardware_Information::getHardDiskInfo();
 
 	Hardware_Information::getFileInfo(hModule);
-}
-
-LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console)
-{
-	Log::GetInstance().InitLog(file_name, console);
-	LogOutputSystemMessage(hModule);
 }
