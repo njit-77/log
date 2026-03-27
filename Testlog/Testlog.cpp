@@ -1,44 +1,16 @@
-﻿// Testlog.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿#include <iostream>
 
-#include <iostream>
-#include <windows.h>
-
+#include "log_export.h"
 #pragma comment(lib, "log.lib")
 
-#ifdef LOG_EXPORTS
-#define LOG_API __declspec(dllexport)
-#else
-#define LOG_API __declspec(dllimport)
-#endif
-
-LOG_API void LogTrace(const char* m, ...);
-LOG_API void LogDebug(const char* m, ...);
-LOG_API void LogInfo(const char* m, ...);
-LOG_API void LogWarn(const char* m, ...);
-LOG_API void LogError(const char* m, ...);
-LOG_API void LogCritical(const char* m, ...);
-enum level_enum
-{
-	trace = 0,
-	debug = 1,
-	info = 2,
-	warn = 3,
-	err = 4,
-	critical = 5,
-	off = 6,
-};
-LOG_API void SetLogLevel(int level);
-LOG_API void SetLogFileName(const char* file_name, HMODULE hModule, bool console, bool topMsg);
 
 int main()
 {
 	SetConsoleOutputCP(CP_UTF8);
+	SetLogFileName("Testlog", GetModuleHandle(TEXT("log.dll")), true);
 
 	SYSTEMTIME sys;
 	GetLocalTime(&sys);
-
-	SetLogFileName("Testlog", GetModuleHandle(TEXT("log.dll")), true, false);
 
 	for (int i = 0; i < level_enum::off; i++)
 	{

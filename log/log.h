@@ -10,10 +10,11 @@
 #include <algorithm>
 #include <functional>
 
+
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include <spdlog/async.h>
+
 
 class Log
 {
@@ -44,9 +45,10 @@ public:
 			logger = spdlog::daily_logger_mt(logger_name, full_file_name, 0, 0);
 		}
 
-		logger->set_pattern("%^%Y-%m-%d %H:%M:%S.%e [ThreadId:%5t] [level:%-8l] %v%$");
+		logger->set_pattern("%^%Y-%m-%d %H:%M:%S.%e [thread:%5t] [%-8l] %v%$");
 		logger->set_level(spdlog::level::trace);
 		logger->flush_on(spdlog::level::err);
+		spdlog::flush_every(std::chrono::seconds(3));
 	}
 
 	inline auto GetLogger()

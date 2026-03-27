@@ -16,6 +16,9 @@
     <Filter Include="version">
       <UniqueIdentifier>{0e831c6f-2ef2-41fe-ae89-9131c182b122}</UniqueIdentifier>
     </Filter>
+    <Filter Include="export">
+      <UniqueIdentifier>{cc59ad15-2232-4a82-ad99-08c9dbd7821b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="log.h">
@@ -30,21 +33,24 @@
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="log_export.h">
+      <Filter>export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="log_export.cpp">
+      <Filter>export</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="log.def">
-      <Filter>源文件</Filter>
-    </None>
     <None Include="version.cmd">
       <Filter>version</Filter>
+    </None>
+    <None Include="log.def">
+      <Filter>export</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
